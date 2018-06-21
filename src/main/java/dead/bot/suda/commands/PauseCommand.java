@@ -2,8 +2,13 @@ package dead.bot.suda.commands;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+
+import dead.bot.suda.player.SudaManager;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -44,6 +49,22 @@ public class PauseCommand extends Command {
 					.build()).queue();
 			return;
 		}
+		
+		Guild guild = e.getGuild();
+		SudaManager manager = SudaManager.getMusicManager(guild);
+		AudioPlayer player = manager.player;
+		
+		if (player.getPlayingTrack() == null)
+        {
+            e.getChannel().sendMessage("There is no track in the queue to pause or resume.").queue();
+            return;
+        }
+
+        player.setPaused(!player.isPaused());
+        if (player.isPaused())
+            e.getChannel().sendMessage("My player is now paused.").queue();
+        else
+            e.getChannel().sendMessage("My player has been resumed.").queue();
 
 	}
 }

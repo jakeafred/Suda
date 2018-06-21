@@ -2,8 +2,14 @@ package dead.bot.suda.commands;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+
+import dead.bot.suda.player.SudaManager;
 import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -45,5 +51,23 @@ public class CurrentSongCommand extends Command {
 			return;
 		}
 
+		Guild guild = e.getGuild();
+		SudaManager manager = SudaManager.getMusicManager(guild);
+		AudioPlayer player = manager.player;
+		
+		AudioTrack currentTrack = player.getPlayingTrack();
+        if (currentTrack != null)
+        {
+            String title = currentTrack.getInfo().title;
+            String position = SudaManager.getTimestamp(currentTrack.getPosition());
+            String duration = SudaManager.getTimestamp(currentTrack.getDuration());
+
+            String nowplaying = String.format("**Playing:** %s\n**Time:** [%s / %s]",
+                    title, position, duration);
+
+            e.getChannel().sendMessage(nowplaying).queue();
+        }
+        else
+            e.getChannel().sendMessage("The player is not currently playing anything!").queue();
 	}
 }

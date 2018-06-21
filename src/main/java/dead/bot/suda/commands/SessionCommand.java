@@ -8,7 +8,7 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class SessionCommand extends Command {
-	
+
 	private int sescount = 0;
 	private int sesmax = 6;
 	private boolean session = false;
@@ -85,11 +85,10 @@ public class SessionCommand extends Command {
 						e.getTextChannel().sendMessage(new MessageBuilder().append(e.getMember().getNickname() + " has left the session queue.").build()).queue();
 						sescount--;
 						return;
-					} else {
-						e.getTextChannel().sendMessage(new MessageBuilder().append("You are not in a session queue.").build()).queue();
-						return;
-					}
+					} 
 				}
+				e.getTextChannel().sendMessage(new MessageBuilder().append("You are not in a session queue.").build()).queue();
+				return;
 			}
 			//Delete Command
 			else if (args[1].contains("delete")) {
