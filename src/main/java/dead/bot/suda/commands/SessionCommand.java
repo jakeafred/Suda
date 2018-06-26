@@ -41,6 +41,9 @@ public class SessionCommand extends Command {
 
 	@Override
 	public void onCommand(MessageReceivedEvent e, String[] args) {
+		
+		String author = e.getMember().getEffectiveName();
+		
 		if (args.length < 2) {
 			e.getTextChannel().sendMessage(new MessageBuilder().append("Please identify what you want to do with this command and try again.\n") 
 					.append("Possibilities: Create, Join, Leave, Delete, List").build()).queue();
@@ -51,7 +54,7 @@ public class SessionCommand extends Command {
 				if (session == false) {
 					session = true;
 					creator = e.getAuthor().getId();
-					e.getTextChannel().sendMessage(new MessageBuilder().append("Session successfully created by " + e.getMember().getNickname() + ".").build()).queue();
+					e.getTextChannel().sendMessage(new MessageBuilder().append("Session successfully created by " + author + ".").build()).queue();
 					return;
 				} else {
 					e.getTextChannel().sendMessage(new MessageBuilder().append("There is already an existing session going on.").build()).queue();
@@ -61,16 +64,16 @@ public class SessionCommand extends Command {
 			//Join Command
 			else if (args[1].contains("join")) {
 				for (int i = 0; i < sesmax; i++) {
-					if (e.getMember().getNickname() == players[i]) {
+					if (author == players[i]) {
 						e.getTextChannel().sendMessage(new MessageBuilder().append("You are already in this session.").build()).queue();
 						return;
 					}
 				}
 				for (int j = 0; j < sesmax; j++) {
 					if (players[j] == "-") {
-						players[j] = e.getMember().getNickname();
+						players[j] = author;
 						sescount++;
-						e.getTextChannel().sendMessage(new MessageBuilder().append(e.getMember().getNickname() + " has signed up for the session. Their spot is " + sescount + " out of " + sesmax).build()).queue();
+						e.getTextChannel().sendMessage(new MessageBuilder().append(author + " has signed up for the session. Their spot is " + sescount + " out of " + sesmax).build()).queue();
 						return;
 					}
 				}
@@ -80,9 +83,9 @@ public class SessionCommand extends Command {
 			//Leave Command
 			else if (args[1].contains("leave")) {
 				for (int i = 0; i < sesmax; i++) {
-					if (players[i] == e.getMember().getNickname()) {
+					if (players[i] == author) {
 						players[i] = "-";
-						e.getTextChannel().sendMessage(new MessageBuilder().append(e.getMember().getNickname() + " has left the session queue.").build()).queue();
+						e.getTextChannel().sendMessage(new MessageBuilder().append(author + " has left the session queue.").build()).queue();
 						sescount--;
 						return;
 					} 
@@ -99,7 +102,7 @@ public class SessionCommand extends Command {
 					for (int i = 0; i < sesmax; i++) {
 						players[i] = "-";
 					}
-					e.getTextChannel().sendMessage(new MessageBuilder().append("Session was successfully deleted by " + e.getMember().getNickname() + ".").build()).queue();
+					e.getTextChannel().sendMessage(new MessageBuilder().append("Session was successfully deleted by " + author + ".").build()).queue();
 					return;
 				} else {
 					e.getTextChannel().sendMessage(new MessageBuilder().append("You are not the creator of the session.").build()).queue();
